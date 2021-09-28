@@ -7,7 +7,7 @@ from pynput.keyboard import Key, Listener
 import auth
 import spotify
 
-# import Rpi.GPIO as GPIO
+import Rpi.GPIO as GPIO
 
 # establish client
 # store credentials
@@ -47,11 +47,11 @@ def button_callback(channel):
         pass
 
 
-# GPIO.setwarnings(False)
-# GPIO.setmode(GPIO.BOARD)
-# GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
-# GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback)
+GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback)
 
 #listen for key inputs
 
