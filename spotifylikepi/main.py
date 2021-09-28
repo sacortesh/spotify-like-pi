@@ -9,6 +9,25 @@ import spotify
 
 import Rpi.GPIO as GPIO
 
+from time import sleep
+
+# establish led levels and button detection
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(8,GPIO.OUT,initial=GPIO.LOW)
+
+GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
+
+GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback)
+
+def blink_leds(count):
+    for _ in range(count):
+        GPIO.output(8, GPIO.LOW)
+        sleep(0.45)
+        GPIO.output(8, GPIO.HIGH)
+        sleep(0.45)
+
+
 # establish client
 # store credentials
 
@@ -17,6 +36,7 @@ import Rpi.GPIO as GPIO
 #like and add to playlist
 
 spotify_client = spotify.Client()
+blink_leds(4)
 
 
 def button_callback(channel):
@@ -37,21 +57,24 @@ def button_callback(channel):
     playlist_found =  spotify_client.validate_playlist()
     playlist = spotify_client.fetch_playlist()
 
+    blink_leds(1)
+
     if song_is_playing == False:
         print('No song is playing')
         
     else:
         spotify_client.send_like(current_song)
+        blink_leds(1)
+
         if playlist_found:
             spotify_client.persist_song(current_song, playlist)
+            blink_leds(1)
         pass
 
 
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
-GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback)
+
+
 
 #listen for key inputs
 
