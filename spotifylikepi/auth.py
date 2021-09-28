@@ -27,7 +27,7 @@ class TokenDispenser:
             client_id=self.spotify_client_id,
             client_secret=self.spotify_client_secret,
             redirect_uri=self.spotify_redirect_uri,
-            scope="playlist-read-private user-library-read",
+            scope="user-library-read playlist-read-private user-read-currently-playing playlist-modify-private playlist-modify-public user-library-modify",
         )
         return token
 
@@ -121,7 +121,7 @@ Please enter your app credentials:"""
         "Spotify redirect URI: "
     )
     spotify_playlist_uid = credentials_found.get("PLAYLIST_UID") or input(
-        "Google developer key: "
+        "Target spotify playlist id: "
     )
     return username, client_id, client_secret, redirect_uri, spotify_playlist_uid
 

@@ -25,15 +25,23 @@ def button_callback(channel):
     song_is_playing = False
 
     current_song = spotify_client.fetch_now_playing()
-    playlist_found =  spotify_client.validate_playlist()
+    song_is_playing = current_song['is_playing']
 
-    if current_song == '-1':
+    if song_is_playing:
+        print('Now Playing: ' + current_song["item"]["name"] + ' by ' + current_song["item"]["artists"][0]["name"])
+    else:
+        print('Not playing nothing')
+
+    playlist_found =  spotify_client.validate_playlist()
+    playlist = spotify_client.fetch_playlist()
+
+    if song_is_playing == False:
         print('No song is playing')
         
     else:
         spotify_client.send_like(current_song)
         if playlist_found:
-            spotify_client.persist_song(current_song)
+            spotify_client.persist_song(current_song, playlist)
         pass
 
 
