@@ -7,7 +7,7 @@ from time import sleep
 import auth
 import spotify
 
-import Rpi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 from time import sleep
 
