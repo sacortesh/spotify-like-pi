@@ -1,5 +1,4 @@
 import spotipy
-
 import auth
 
 
@@ -63,6 +62,18 @@ class Client:
             offset += limit
             for playlist in playlists:
                 yield playlist["id"], playlist["name"], playlist["owner"]["id"]
+
+    def fetch_now_playing(self):
+        pass
+
+    def validate_playlist(self):
+        pass
+
+    def send_like(self, song):
+        pass
+
+    def persist_song(self, song):
+        pass
 
 
 class Track:
