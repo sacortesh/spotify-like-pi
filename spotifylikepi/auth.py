@@ -59,7 +59,7 @@ class TokenDispenser:
         return self.credentials[3]
 
     @property
-    def google_developer_key(self):
+    def spotify_playlist_uid(self):
         return self.credentials[4]
 
 
@@ -100,7 +100,7 @@ def load_credentials():
             credentials["CLIENT_ID"],
             credentials["CLIENT_SECRET"],
             credentials["REDIRECT_URI"],
-            credentials["GOOGLE_DEVELOPER_KEY"],
+            credentials["PLAYLIST_UID"],
         )
     except (ValueError, KeyError):
         raise CredentialsNotFound("Could not parse credentials file", **credentials)
@@ -108,10 +108,8 @@ def load_credentials():
 
 def ask_for_credentials(**credentials_found):
     print(
-        """You need to register as a developer and create a Spotify app in order to use spotify-onthego.
+        """You need to register as a developer and create a Spotify app in order to use spotify-like-pi.
 You may create an app here: https://developer.spotify.com/my-applications/#!/applications/create
-You also need to register a youtube app developer key. The app key can be
-obtained for free here: https://console.cloud.google.com/apis/api/youtube/overview
 Please enter your app credentials:"""
     )
     username = credentials_found.get("USERNAME") or input("Spotify username: ")
@@ -122,14 +120,14 @@ Please enter your app credentials:"""
     redirect_uri = credentials_found.get("REDIRECT_URI") or input(
         "Spotify redirect URI: "
     )
-    google_developer_key = credentials_found.get("GOOGLE_DEVELOPER_KEY") or input(
+    spotify_playlist_uid = credentials_found.get("PLAYLIST_UID") or input(
         "Google developer key: "
     )
-    return username, client_id, client_secret, redirect_uri, google_developer_key
+    return username, client_id, client_secret, redirect_uri, spotify_playlist_uid
 
 
 def save_credentials(
-    username, client_id, client_secret, redirect_uri, google_developer_key
+    username, client_id, client_secret, redirect_uri, spotify_playlist_uid
 ):
     credentials_path = get_credentials_path()
     print("Saving Spotify and Youtube credentials to", credentials_path)
@@ -141,7 +139,7 @@ def save_credentials(
                 "CLIENT_ID": client_id,
                 "CLIENT_SECRET": client_secret,
                 "REDIRECT_URI": redirect_uri,
-                "GOOGLE_DEVELOPER_KEY": google_developer_key,
+                "PLAYLIST_UID": spotify_playlist_uid,
             },
             credentials_file,
         )
@@ -164,11 +162,11 @@ def get_token_path():
 def get_config_file_path(filename):
     # We used to store config files in ~/.local, so we still need to
     # support config files stored there
-    config_dir = os.path.expanduser("~/.local/share/spotify-onthego/")
+    config_dir = os.path.expanduser("~/.local/share/spotifylikepi/")
 
     # This is the more modern way of storing config files (cross-platform)
     if not os.path.exists(config_dir):
-        config_dir = appdirs.user_config_dir("spotify-onthego")
+        config_dir = appdirs.user_config_dir("spotifylikepi")
 
     return os.path.join(config_dir, filename)
 
