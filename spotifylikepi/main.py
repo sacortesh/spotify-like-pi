@@ -2,7 +2,7 @@ import sys
 import _thread
 from time import sleep
 
-from pynput.keyboard import Key, Listener
+# from pynput.keyboard import Key, Listener
 
 import auth
 import spotify
@@ -94,5 +94,8 @@ def show(key):
         return False
   
 # Collect all event until released
-with Listener(on_press = show) as listener:   
-    listener.join()
+# with Listener(on_press = show) as listener:   
+#    listener.join()
+
+message = input("Press enter to quit\n\n")
+GPIO.cleanup()
