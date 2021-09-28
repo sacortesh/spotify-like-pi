@@ -16,16 +16,18 @@ import spotify
 
 #like and add to playlist
 
+spotify_client = spotify.Client()
+
+
 def button_callback(channel):
     print('External button is pushed')
 
-    spotify_client = spotify.Client()
 
     playlist_found = False
     song_is_playing = False
 
     current_song = spotify_client.fetch_now_playing()
-    song_is_playing = current_song['is_playing']
+    song_is_playing = current_song != None and current_song['is_playing']
 
     if song_is_playing:
         print('Now Playing: ' + current_song["item"]["name"] + ' by ' + current_song["item"]["artists"][0]["name"])
