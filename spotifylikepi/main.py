@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import _thread
 from time import sleep
