@@ -1,13 +1,29 @@
 import spotipy
 import auth
+import sched, time
+import threading
+
 
 
 class Client:
     def __init__(self):
-        token_dispenser = auth.TokenDispenser()
-        self.spotify_username = token_dispenser.spotify_username
-        self.spotify = spotipy.Spotify(auth=token_dispenser.spotify_token)
-        self.playlist_id = token_dispenser.spotify_playlist_uid
+        self._token_dispenser = auth.TokenDispenser()
+        self.spotify_username = self._token_dispenser.spotify_username
+        self.spotify = spotipy.Spotify(auth=self._token_dispenser.spotify_token)
+        self.playlist_id = self._token_dispenser.spotify_playlist_uid
+        self.stop_refresh = False
+        self.request_token_refresh_async()
+
+    def request_token_refresh_async(self):
+        print('scheduled call')
+
+        self._token_dispenser.refresh_token()
+        self.spotify = spotipy.Spotify(auth=self._token_dispenser.spotify_token)
+
+        if not self.stop_refresh:
+            threading.Timer(20, self.request_token_refresh_async).start()
+        
+        return
 
     def fetch_now_playing(self):
         current_track = self.spotify.currently_playing(None, None)

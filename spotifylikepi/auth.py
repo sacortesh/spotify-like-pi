@@ -10,26 +10,66 @@ class TokenDispenser:
     def __init__(self):
         self._token = None
         self._credentials = None
+        self._token_info = None
 
     @property
     def spotify_token(self):
         if self._token is None:
-            token = load_token()
-            if token is None or not is_token_valid(token):
-                token = self.get_new_token()
-                save_token(token)
-            self._token = token
+            token_info = load_token_info()
+            token = None
+            if token_info:
+                token = token_info['access_token']
+                token_response = token_info
+
+                if not is_token_valid(token):
+                    self._token = token
+                    self._token_info = token_response
+                    self.refresh_token()
+
+            if token_info is None or not is_token_valid(token):
+                token_response = self.get_oauth_token()
+                save_token_info(token_response)
+
+            self._token = token_response['access_token']
+            self._token_info = token_response
+
         return self._token
 
-    def get_new_token(self):
-        token = spotipy.util.prompt_for_user_token(
-            self.spotify_username,
+    def get_oauth_token(self):
+        sp_oauth = spotipy.oauth2.SpotifyOAuth(
             client_id=self.spotify_client_id,
             client_secret=self.spotify_client_secret,
             redirect_uri=self.spotify_redirect_uri,
             scope="user-library-read playlist-read-private user-read-currently-playing playlist-modify-private playlist-modify-public user-library-modify",
         )
-        return token
+        auth_url = sp_oauth.get_authorize_url()
+        print(auth_url)
+        response = input('Paste the above link into your browser, then paste the redirect url here: ')
+
+        code = sp_oauth.parse_response_code(response)
+        token_data = sp_oauth.get_access_token(code)
+
+        return token_data
+
+    def refresh_token(self):
+        print('refreshing token')
+        if self._token_info is None:
+            return
+
+        print('i can do stuff')
+
+        sp_oauth = spotipy.oauth2.SpotifyOAuth(
+            client_id=self.spotify_client_id,
+            client_secret=self.spotify_client_secret,
+            redirect_uri=self.spotify_redirect_uri,
+            scope="user-library-read playlist-read-private user-read-currently-playing playlist-modify-private playlist-modify-public user-library-modify",
+        )
+
+        if sp_oauth.is_token_expired(self._token_info):
+            self._token_info = sp_oauth.refresh_access_token(self._token_info['refresh_token'])
+            self._token = self._token_info['access_token']
+            save_token(self._token)
+            save_token_info(self._token_info)
 
     @property
     def credentials(self):
@@ -70,6 +110,15 @@ def load_token():
     with open(token_path) as token_file:
         return token_file.read().strip()
 
+def load_token_info():
+    token_path = get_token_info_path()
+    if not os.path.exists(token_path):
+        return None
+    with open(token_path) as token_file:
+        try:
+            return json.load(token_file)
+        except:
+            return None
 
 def save_token(token):
     token_path = get_token_path()
@@ -77,6 +126,19 @@ def save_token(token):
     with open(token_path, "w") as token_file:
         token_file.write(token)
 
+
+def save_token_info(token):
+    token_path = get_token_info_path()
+    check_directory_exists(token_path)
+    with open(token_path, "w") as token_file:
+        json.dump(
+            {
+                "access_token": token['access_token'],
+                "refresh_token": token['refresh_token'],
+                "expires_at": token['expires_at']
+            },
+            token_file,
+        )
 
 def is_token_valid(token):
     try:
@@ -157,6 +219,9 @@ def get_credentials_path():
 
 def get_token_path():
     return get_config_file_path("spotify.token")
+
+def get_token_info_path():
+    return get_config_file_path("spotify.tokeninfo")
 
 
 def get_config_file_path(filename):
