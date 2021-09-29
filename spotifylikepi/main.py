@@ -19,7 +19,7 @@ GPIO.setup(8,GPIO.OUT,initial=GPIO.LOW)
 GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
 def button_callback(channel):
-    print('External button is pushed')
+    print('>>>External button is pushed')
 
 
     playlist_found = False
@@ -29,9 +29,9 @@ def button_callback(channel):
     song_is_playing = current_song != None and current_song['is_playing']
 
     if song_is_playing:
-        print('Now Playing: ' + current_song["item"]["name"] + ' by ' + current_song["item"]["artists"][0]["name"])
+        print('>>>Now Playing: ' + current_song["item"]["name"] + ' by ' + current_song["item"]["artists"][0]["name"])
     else:
-        print('Not playing nothing')
+        print('>>>Not playing a song')
 
     playlist_found =  spotify_client.validate_playlist()
     playlist = spotify_client.fetch_playlist()
@@ -39,7 +39,7 @@ def button_callback(channel):
     blink_leds(1)
 
     if song_is_playing == False:
-        print('No song is playing')
+        blink_leds(1)
         
     else:
         spotify_client.send_like(current_song)

@@ -44,7 +44,7 @@ class TokenDispenser:
         )
         auth_url = sp_oauth.get_authorize_url()
         print(auth_url)
-        response = input('Paste the above link into your browser, then paste the redirect url here: ')
+        response = input('>>>Paste the above link into your browser, then paste the redirect url here: ')
 
         code = sp_oauth.parse_response_code(response)
         token_data = sp_oauth.get_access_token(code)
@@ -52,11 +52,10 @@ class TokenDispenser:
         return token_data
 
     def refresh_token(self):
-        print('refreshing token')
         if self._token_info is None:
             return
 
-        print('i can do stuff')
+        print('>>>Refresh Token')
 
         sp_oauth = spotipy.oauth2.SpotifyOAuth(
             client_id=self.spotify_client_id,
@@ -65,11 +64,10 @@ class TokenDispenser:
             scope="user-library-read playlist-read-private user-read-currently-playing playlist-modify-private playlist-modify-public user-library-modify",
         )
 
-        if sp_oauth.is_token_expired(self._token_info):
-            self._token_info = sp_oauth.refresh_access_token(self._token_info['refresh_token'])
-            self._token = self._token_info['access_token']
-            save_token(self._token)
-            save_token_info(self._token_info)
+        self._token_info = sp_oauth.refresh_access_token(self._token_info['refresh_token'])
+        self._token = self._token_info['access_token']
+        save_token(self._token)
+        save_token_info(self._token_info)
 
     @property
     def credentials(self):
@@ -192,7 +190,7 @@ def save_credentials(
     username, client_id, client_secret, redirect_uri, spotify_playlist_uid
 ):
     credentials_path = get_credentials_path()
-    print("Saving Spotify and Youtube credentials to", credentials_path)
+    print(">>>Saving Spotify credentials to", credentials_path)
     check_directory_exists(credentials_path)
     with open(credentials_path, "w") as credentials_file:
         json.dump(

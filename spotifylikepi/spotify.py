@@ -15,13 +15,13 @@ class Client:
         self.request_token_refresh_async()
 
     def request_token_refresh_async(self):
-        print('scheduled call')
+        print('>>>Scheduled refresh call')
 
         self._token_dispenser.refresh_token()
         self.spotify = spotipy.Spotify(auth=self._token_dispenser.spotify_token)
 
         if not self.stop_refresh:
-            t = threading.Timer(20, self.request_token_refresh_async)
+            t = threading.Timer(3000, self.request_token_refresh_async)
             t.daemon = True
             t.start()
         
@@ -59,7 +59,7 @@ class Client:
 
     def persist_song(self, song, playlist):
         if self.playlist_has_song(playlist['id'], song['item']['id']):
-            print('duplicate detected. Ignoring')
+            print('>>>Duplicate detected. Ignoring')
             return
         song_array = []
         song_array.append(song['item']['id'])
