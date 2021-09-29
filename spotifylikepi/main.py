@@ -102,3 +102,4 @@ def show(key):
 
 message = input("Press enter to quit\n\n")
 GPIO.cleanup()
+spotify_client.stop_refresh=True

@@ -21,7 +21,9 @@ class Client:
         self.spotify = spotipy.Spotify(auth=self._token_dispenser.spotify_token)
 
         if not self.stop_refresh:
-            threading.Timer(20, self.request_token_refresh_async).start()
+            t = threading.Timer(20, self.request_token_refresh_async)
+            t.daemon = True
+            t.start()
         
         return
 
