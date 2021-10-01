@@ -59,7 +59,7 @@ def blink_leds(count):
         sleep(0.25)
 
 
-GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback)
+GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback, bouncetime=200)
 
 
 
