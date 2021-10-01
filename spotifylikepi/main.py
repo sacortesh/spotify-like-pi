@@ -30,7 +30,7 @@ def button_callback(channel):
 
     if(push_button_count == 1):
         push_button_count = 0
-    #    return
+        return
     else:
         push_button_count = 1
 
@@ -38,8 +38,8 @@ def button_callback(channel):
     print('>>>External button is pushed')
 
     input_value = GPIO.input(10)
-    print("DEBUG: PIN 10 valie is " + str(input_value))
-    print("DEBUG: push_button_count value is " + str(push_button_count))
+    #print("DEBUG: PIN 10 valie is " + str(input_value))
+    #print("DEBUG: push_button_count value is " + str(push_button_count))
 
 
     playlist_found = False
