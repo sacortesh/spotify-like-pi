@@ -10,7 +10,6 @@ import spotify
 
 import RPi.GPIO as GPIO
 
-from time import sleep
 
 # establish led levels and button detection
 GPIO.setwarnings(False)
@@ -55,9 +54,9 @@ def button_callback(channel):
 def blink_leds(count):
     for _ in range(count):
         GPIO.output(8, GPIO.LOW)
-        sleep(0.45)
+        sleep(0.25)
         GPIO.output(8, GPIO.HIGH)
-        sleep(0.45)
+        sleep(0.25)
 
 
 GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback)
@@ -101,6 +100,10 @@ def show(key):
 # with Listener(on_press = show) as listener:   
 #    listener.join()
 
-message = input("Press enter to quit\n\n")
+print('Waiting for termination\n\n')
+
+while(True):
+    sleep(1)
+
 GPIO.cleanup()
 spotify_client.stop_refresh=True
