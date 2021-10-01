@@ -26,6 +26,8 @@ def setup():
 
 def button_callback(channel):
 
+    global push_button_count
+
     if(push_button_count == 1):
         push_button_count = 0
     #    return
