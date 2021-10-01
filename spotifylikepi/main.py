@@ -18,9 +18,14 @@ GPIO.setup(8,GPIO.OUT,initial=GPIO.LOW)
 
 GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
+def setup():
+    GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback, bouncetime=500)
+
+
 def button_callback(channel):
     print('>>>External button is pushed')
 
+    GPIO.remove_event_detect(10)
 
     playlist_found = False
     song_is_playing = False
@@ -48,7 +53,9 @@ def button_callback(channel):
         if playlist_found:
             spotify_client.persist_song(current_song, playlist)
             blink_leds(1)
-        pass
+
+    setup()
+        
 
 
 def blink_leds(count):
@@ -59,8 +66,7 @@ def blink_leds(count):
         sleep(0.25)
 
 
-GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback, bouncetime=200)
-
+setup()
 
 
 # establish client
