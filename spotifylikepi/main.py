@@ -18,14 +18,27 @@ GPIO.setup(8,GPIO.OUT,initial=GPIO.LOW)
 
 GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
+push_button_count = 0
+
 def setup():
-    GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback, bouncetime=500)
+    GPIO.add_event_detect(10,GPIO.RISING,callback=button_callback, bouncetime=200)
 
 
 def button_callback(channel):
+
+    if(push_button_count == 1):
+        push_button_count = 0
+    #    return
+    else:
+        push_button_count = 1
+
+
     print('>>>External button is pushed')
 
-    GPIO.remove_event_detect(10)
+    input_value = GPIO.input(10)
+    print("DEBUG: PIN 10 valie is " + str(input_value))
+    print("DEBUG: push_button_count value is " + str(push_button_count))
+
 
     playlist_found = False
     song_is_playing = False
@@ -54,7 +67,6 @@ def button_callback(channel):
             spotify_client.persist_song(current_song, playlist)
             blink_leds(1)
 
-    setup()
         
 
 
