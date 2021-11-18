@@ -25,6 +25,8 @@ class TokenDispenser:
                     self._token = token
                     self._token_info = token_response
                     self.refresh_token()
+                    token = self._token
+                    token_info = self._token_info
 
             if token_info is None or not is_token_valid(token):
                 token_response = self.get_oauth_token()
